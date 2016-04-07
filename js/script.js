@@ -44,6 +44,7 @@ var oneStep = function(i ,j ,me){
 
 var me = true;
 var chessBoard = [];
+var over = false;
 
 for(var i = 0; i<15; i++){
 	chessBoard[i] = [];
@@ -52,17 +53,30 @@ for(var i = 0; i<15; i++){
 	}
 }
 chess.onclick = function(e){
+	if(over){
+		return;
+	}
 	var x = e.offsetX;
 	var y = e.offsetY;
 	var i = Math.floor(x / 30);
 	var j = Math.floor(y / 30);
 	if(chessBoard[i][j] == 0){
 		oneStep(i, j, me);
-		if(me){
-			chessBoard[i][j] = 1;
-		}else{
-			chessBoard[i][j] = 2;
+		chessBoard[i][j] = 1;
+		for(var k=0; k<count; k++){
+			if(wins[i][j][k]){
+				myWin[k]++;
+				computerWin[k] = 6;
+				//一旦黑子落下, 就表示白子在相应的赢法上不可能获胜
+				if(myWin[k] == 5){
+					window.alert("你赢了!");
+					over = true;
+				}
+			}
 		}
-		me = !me;
+		if(!over){
+			me=!me;
+			computerAI();
+		}
 	}	
 }
